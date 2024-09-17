@@ -1,25 +1,5 @@
 #include "builtins.h"
 
-t_env *get_last(t_env *envir)
-{
-    if (!envir)
-        return NULL;
-    while(envir->next)
-        envir = envir->next;
-    return envir;
-}
-
-void add_back(t_env **envir, t_env *var)
-{
-    t_env *last = get_last(*envir);
-    if (!*envir)
-    {
-        *envir = var;
-        return;
-    }
-    last->next = var;
-}
-
 t_env *make_env(char **env) 
 {
     int i = 0;
@@ -32,13 +12,13 @@ t_env *make_env(char **env)
         new = malloc(sizeof(t_env));
         if (!new)
             return NULL;
-        delimiter = ft_strchr(env[i], '=');
+        delimiter = strchr(env[i], '=');
         if (!delimiter) 
         {
             free(new);
             return NULL; 
         }
-        new->variable = ft_strndup(env[i], delimiter - env[i]);
+        new->variable = strndup(env[i], delimiter - env[i]);
         if (!new->variable) 
         {
             free(new);
@@ -52,6 +32,7 @@ t_env *make_env(char **env)
             return NULL;
         }
         new->next = NULL;
+        new->prev = NULL;
         add_back(&envir, new);
         i++;
     }
@@ -62,14 +43,35 @@ void my_env(t_env *env)
 {
     while (env) 
     {
-        printf("%s=", env->variable);
-		printf("%s\n", env->value);
+        printf("%s=%s\n", env->variable, env->value);
         env = env->next;
     }
 }
 
-// int main (int ac, char **av, char **env)
+void free_env(t_env *env)
+{
+    t_env *temp;
+    while (env)
+    {
+        temp = env;
+        env = env->next;
+        free(temp->variable);
+        free(temp->value);
+        free(temp);
+    }
+}
+
+// int main(int argc, char **argv, char **envp)
 // {
-//     t_env *test = make_env(env);
-//     my_env (test);
+//     t_env *env = make_env(envp);
+//     if (!env)
+//     {
+//         printf("Failed to create environment list\n");
+//         return 1;
+//     }
+
+//     my_env(env);
+
+//     free_env(env);
+//     return 0;
 // }

@@ -10,7 +10,7 @@ void my_pwd()
         perror ("error\n");
 }
 
-int main ()
-{
-    my_pwd();
-}
+// int main ()
+// {
+//     my_pwd();
+// }

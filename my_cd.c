@@ -151,7 +151,7 @@ void update_oldpwd(t_env *env, const char *old_pwd)
 
 void update_pwd(t_env *env)
 {
-    char cwd[1024];
+    char cwd[4096];
 
     if (getcwd(cwd, sizeof(cwd)) != NULL)
         update_env_value(env, "PWD", cwd);
@@ -161,7 +161,7 @@ void update_pwd(t_env *env)
 
 void my_cd(t_env *env, int ac, char **av)
 {
-    char old_pwd[1024];
+    char old_pwd[4096];
 
     if (ac != 2)
     {
@@ -193,4 +193,6 @@ int main (int ac, char **av, char **env)
     my_cd(test, ac, av);
     printf ("----------------------after cd ------------------\n");
     my_env(test);
+    printf ("-------------------------------------------------\n");
+    my_pwd();
 }

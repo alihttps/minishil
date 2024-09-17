@@ -13,6 +13,7 @@ typedef struct s_env
     char *variable;
     char *value;
     struct s_env *next;
+    struct s_env *prev;
 } t_env;
 
 
@@ -24,7 +25,12 @@ void print_env(t_env *env);
 t_env *make_env(char **env);
 char *ft_strchr(char *str, int c);
 char *ft_strndup (char *str, size_t n);
+char *ft_strdup (char *str);
+void add_back(t_env **envir, t_env *var);
+t_env *get_last(t_env *envir);
 //my_env
 void my_env(t_env *env);
-
+void free_env(t_env *env);
+//pwd
+void my_pwd();
 #endif
