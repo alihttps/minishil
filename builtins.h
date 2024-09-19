@@ -20,6 +20,7 @@ typedef struct s_env
 //utils
 int list_len(t_env *env);
 char	*ft_strjoin(char *s1, char *s2);
+char	**ft_split(char const *s, char sep);
 size_t	ft_strlen(char *str);
 void print_env(t_env *env);
 t_env *make_env(char **env);
@@ -33,4 +34,6 @@ void my_env(t_env *env);
 void free_env(t_env *env);
 //pwd
 void my_pwd();
+//export
+int my_export(t_env **env, char **args);
 #endif

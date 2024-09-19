@@ -8,12 +8,13 @@
 
 #define MAX_COMMAND_LENGTH 1024
 
-void execute_command(const char *command, char **env) 
+void execute_command(const char *command, char **av,  char **env) 
 {
     t_env *envv;
-    if (strcmp(command, "env") == 0)
+    if (strcmp(command, "export") == 0)
     {
         envv = make_env(env);
+        my_export(&envv, av + 1);
         my_env(envv);
     }
 }
@@ -46,7 +47,7 @@ int main(int ac, char **av, char **env)
                 break;
             }
 
-            execute_command(input, env);
+            execute_command(input, av, env);
         }
 
         free(input);

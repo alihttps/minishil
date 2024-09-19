@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include "builtins.h"
 
 int find_pipe_index(int ac, char **av)
 {
@@ -15,6 +16,50 @@ int find_pipe_index(int ac, char **av)
     }
     return -1;
 }
+
+char *find_path(char *cmd, char **env)
+{
+    char *full_path;
+    char *full_command;
+    char *path_var = NULL;
+    
+    int j = 0;
+    while (env[j])
+    {
+        if (strncmp(env[j], "PATH=", 5) == 0)
+        {
+            path_var = env[j] + 5;
+            break;
+        }
+        j++;
+    }
+
+    if (!path_var)
+        return NULL;
+
+    char **paths = ft_split(path_var, ':');
+    if (!paths)
+        return NULL;
+
+    int i = 0;
+    while (paths[i])
+    {
+        full_path = ft_strjoin(paths[i], "/");
+        full_command = ft_strjoin(full_path, cmd);
+        
+        free(full_path);
+
+        if (access(full_command, F_OK) == 0)
+        {
+            return full_command;
+        }
+        free(full_command);
+        i++;
+    }
+
+    return NULL;
+}
+
 
 void pipe_and_execute(char **cmd1, char **cmd2, char **env)
 {
@@ -35,7 +80,9 @@ void pipe_and_execute(char **cmd1, char **cmd2, char **env)
         close(fd[0]);               
         close(fd[1]);
 
-        execve(cmd1[0], cmd1, env);
+        char *fullcmd1 = find_path(cmd2[0], env);
+
+        execve(fullcmd1, cmd1, env);
         perror ("cant execute cmd2");
         exit(EXIT_FAILURE);
     }
@@ -47,7 +94,9 @@ void pipe_and_execute(char **cmd1, char **cmd2, char **env)
         close(fd[1]);       
         close(fd[0]);
 
-        execve(cmd2[0], cmd2, env);
+        char *fullcmd2 = find_path(cmd2[0], env);
+
+        execve(fullcmd2, cmd2, env);
         perror ("cant execute cmd2");
         exit(EXIT_FAILURE);
     }
