@@ -1,48 +1,25 @@
 #include "builtins.h"
 
-t_env *get_last(t_env *envir)
-{
-    if (!envir)
-        return NULL;
-    while(envir->next)
-        envir = envir->next;
-    return envir;
-}
-
-void add_back(t_env **envir, t_env *var)
-{
-    t_env *last = get_last(*envir);
-    if (!*envir)
-    {
-        *envir = var;
-        return;
-    }
-    last->next = var;
-}
-
-t_env *make_env(char **env) 
+t_env *make_env(t_execution *exec) 
 {
     int i = 0;
     t_env *envir = NULL;
     t_env *new;
     char *delimiter;
 
-    while (env[i]) 
+    while (exec->env_orginal[i])
     {
         new = malloc(sizeof(t_env));
         if (!new)
             return NULL;
-        delimiter = ft_strchr(env[i], '=');
-        if (!delimiter) 
+        delimiter = strchr(exec->env_orginal[i], '=');
+        if (!delimiter)
+            free(new); 
+        new->variable = strndup(exec->env_orginal[i], delimiter - exec->env_orginal[i]);
+        if (!new->variable)
         {
-            free(new);
-            return NULL; 
-        }
-        new->variable = ft_strndup(env[i], delimiter - env[i]);
-        if (!new->variable) 
-        {
-            free(new);
-            return NULL; 
+            free(new);  
+            return NULL;
         }
         new->value = strdup(delimiter + 1);
         if (!new->value)
@@ -55,6 +32,7 @@ t_env *make_env(char **env)
         add_back(&envir, new);
         i++;
     }
+    exec->env = envir;
     return envir;
 }
 
@@ -62,14 +40,37 @@ void my_env(t_env *env)
 {
     while (env) 
     {
-        printf("%s=", env->variable);
-		printf("%s\n", env->value);
+        printf("%s=%s\n", env->variable, env->value);
         env = env->next;
     }
 }
 
-// int main (int ac, char **av, char **env)
+void free_env(t_env *env)
+{
+    t_env *temp;
+    while (env)
+    {
+        temp = env;
+        env = env->next;
+        free(temp->variable);
+        free(temp->value);
+        free(temp);
+    }
+}
+
+// int main(int argc, char **argv, char **envp)
 // {
-//     t_env *test = make_env(env);
-//     my_env (test);
+//     t_execution *exec = malloc (sizeof (t_execution));
+//     exec->env_orginal = envp;
+//     t_env *env = make_env(exec);
+//     if (!env)
+//     {
+//         printf("Failed to create environment list\n");
+//         return 1;
+//     }
+
+//     my_env(env);
+
+//     free_env(env);
+//     return 0;
 // }

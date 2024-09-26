@@ -151,7 +151,7 @@ void update_oldpwd(t_env *env, const char *old_pwd)
 
 void update_pwd(t_env *env)
 {
-    char cwd[1024];
+    char cwd[4096];
 
     if (getcwd(cwd, sizeof(cwd)) != NULL)
         update_env_value(env, "PWD", cwd);
@@ -159,38 +159,72 @@ void update_pwd(t_env *env)
         perror("getcwd error");
 }
 
-void my_cd(t_env *env, int ac, char **av)
+int check_path (char *path)
 {
-    char old_pwd[1024];
+    struct stat path_stat;
 
-    if (ac != 2)
+    // Check if the path exists and retrieve its status
+    if (stat(path, &path_stat) != 0)
     {
-        fprintf(stderr, "cd: wrong number of arguments\n");
-        return;
+        printf("Error:\n");
+        return -1;
     }
+    // Check if it's a regular file
+    else if (S_ISREG(path_stat.st_mode))
+    {
+        printf("not a directory: %s\n", path);
+    }
+    else
+    {
+        printf("cd: no such file or directory: %s.\n", path);
+        return -1;
+    }
+    return 0;
+}
+
+int my_cd(t_execution *exec)
+{
+    char old_pwd[4096];
+
+    if (exec->ac != 2)
+    {
+        printf("cd: wrong number of arguments\n");
+        return 1;
+    }
+
+    // int i = check_path(exec->av[1]);
 
     if (getcwd(old_pwd, sizeof(old_pwd)) == NULL)
     {
         perror("getcwd error");
-        return;
+        return 2;
     }
 
-    if (chdir(av[1]) != 0)
+    if (chdir(exec->av[1]) != 0)
     {
-        perror("cd error");
-        return;
+        perror("chdir");
+        return 3;
     }
 
-    update_oldpwd(env, old_pwd);
-    update_pwd(env);
+    update_oldpwd(exec->env, old_pwd);
+    update_pwd(exec->env);
+
+    return 0;
 }
 
 int main (int ac, char **av, char **env)
 {
-    t_env *test = make_env(env);
-    printf ("----------------------before cd ------------------\n");
-    my_env(test);
-    my_cd(test, ac, av);
-    printf ("----------------------after cd ------------------\n");
-    my_env(test);
+    t_execution *exec = malloc (sizeof(t_execution));
+    exec->env_orginal = env;
+    t_env *test = make_env(exec);
+    exec->ac = ac;
+    exec->av = av;
+    exec->env = test;
+    // printf ("----------------------before cd ------------------\n");
+    // my_env(test);
+    my_cd(exec);
+    // printf ("----------------------after cd ------------------\n");
+    // my_env(test);
+    // printf ("-------------------------------------------------\n");
+    my_pwd();
 }
