@@ -41,7 +41,7 @@ void my_echo (int ac, char **av)
         printf ("\n");
 }
 
-int main (int ac , char **av)
-{
-    my_echo(ac, av);
-}
+// int main (int ac , char **av)
+// {
+//     my_echo(ac, av);
+// }

@@ -54,9 +54,7 @@ char *find_path(char *cmd, char **env)
             return full_command;
         }
         free(full_command);
-        i++;
-    }
-
+        i++;    }
     return NULL;
 }
 
@@ -80,7 +78,7 @@ void pipe_and_execute(char **cmd1, char **cmd2, char **env)
         close(fd[0]);               
         close(fd[1]);
 
-        char *fullcmd1 = find_path(cmd2[0], env);
+        char *fullcmd1 = find_path(cmd1[0], env);
 
         execve(fullcmd1, cmd1, env);
         perror ("cant execute cmd2");

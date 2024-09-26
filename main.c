@@ -8,16 +8,21 @@
 
 #define MAX_COMMAND_LENGTH 1024
 
-void execute_command(const char *command, char **av,  char **env) 
-{
-    t_env *envv;
-    if (strcmp(command, "export") == 0)
-    {
-        envv = make_env(env);
-        my_export(&envv, av + 1);
-        my_env(envv);
-    }
-}
+// void execute_command(t_execution *exec) 
+// {
+//     char **spl = ft_split(exec->input, ' ');
+
+
+//     if (strcmp(spl[0], "cd") == 0)
+//     {
+//         my_cd(exec);
+//     }
+//     if (strcmp(spl[0], "export") == 0)
+//     {
+//         my_export(&envv, av + 1);
+//         my_env(envv);
+//     }
+// }
 
 int main(int ac, char **av, char **env)
 {
@@ -26,31 +31,40 @@ int main(int ac, char **av, char **env)
 
     printf("Welcome to MyShell. Type 'exit' or 'quit' to exit.\n");
 
+    t_execution *exec;
+
+    exec = malloc(sizeof(t_execution));
+    exec->ac = ac;
+    exec->env_orginal = env;
+    exec->av = av;
+
+    make_env(exec);
+
     while (1) 
     {
-        input = readline(prompt);
+        exec->input = readline(prompt);
 
-        if (input == NULL) 
+        if (exec->input == NULL) 
         {
             printf("\nExiting shell...\n");
             break;
         }
 
-        if (strlen(input) > 0) 
+        if (strlen(exec->input) > 0) 
         {
-            add_history(input);
+            add_history(exec->input);
 
-            if (strcmp(input, "exit") == 0 || strcmp(input, "quit") == 0) 
+            if (strcmp(exec->input, "exit") == 0 || strcmp(exec->input, "quit") == 0) 
             {
                 printf("Exiting shell...\n");
-                free(input);
+                free(exec->input);
                 break;
             }
 
-            execute_command(input, av, env);
+            execute_command(exec);
         }
 
-        free(input);
+        free(exec->input);
     }
 
     clear_history();

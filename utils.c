@@ -109,12 +109,10 @@ void add_back(t_env **envir, t_env *var)
     if (!*envir)
     {
         *envir = var;
-        var->prev = NULL;
     }
     else
     {
         last->next = var;
-        var->prev = last;
     }
     var->next = NULL;
 }
