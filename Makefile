@@ -1,19 +1,18 @@
 NAME = minishell
 
-CFLAGS = # -Wall -Wextra -Werror -fsanitize=address -g3
+CFLAGS = -fsanitize=address -g3 # -Wall -Wextra -Werror 
 
-RFLAGS = -lreadline
 
-SRCS =  my_cd.c my_export.c my_echo.c my_env.c my_pwd.c utils.c
+SRCS =  my_cd.c my_export.c my_echo.c my_env.c my_pwd.c utils.c main.c
 
 OBJ = $(SRCS:.c=.o)
 %.o:%.c
-	$(CC) $(RFLAG) $(CFLAGS) -c $^ -o $@
+	$(CC) $(CFLAGS) -c $^ -o $@
 
 all : $(NAME)
 
 $(NAME) : $(OBJ)
-	$(CC) $(RFLAG) $(CFLAGS) $(OBJ) -o $(NAME)
+	$(CC)  $(CFLAGS) $(OBJ) -lreadline -o $(NAME)
 
 clean :
 	rm -f $(OBJ)

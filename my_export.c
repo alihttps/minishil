@@ -1,9 +1,5 @@
 #include "builtins.h"
 
-<<<<<<< HEAD
-
-
-=======
 int is_alpha (int c)
 {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
@@ -160,7 +156,7 @@ int export_with_value(t_execution *exec, char *arg, char *equal, char *plus)
         return 0;
     }
 
-    free(var_name);
+    // free(var_name);
     return 1;
 }
 
@@ -206,13 +202,14 @@ int my_export(t_execution *exec)
     {
         char *arg = exec->av[i];
 
-        if (is_valid_identifier(arg) < 0)
-            return 1;
+        // if (is_valid_identifier(arg) < 0)
+            // return 1;
 
         if (!process_export_arg(exec, arg))
             return 1;
 
         i++;
+		printf("data == %s\n", arg);
     }
     return 0;
 }
@@ -235,4 +232,3 @@ int my_export(t_execution *exec)
 //     my_env(exec->env);
 //     return 0;
 // }
->>>>>>> origin/robo

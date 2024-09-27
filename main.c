@@ -8,21 +8,21 @@
 
 #define MAX_COMMAND_LENGTH 1024
 
-// void execute_command(t_execution *exec) 
-// {
-//     char **spl = ft_split(exec->input, ' ');
-
-
-//     if (strcmp(spl[0], "cd") == 0)
-//     {
-//         my_cd(exec);
-//     }
-//     if (strcmp(spl[0], "export") == 0)
-//     {
-//         my_export(&envv, av + 1);
-//         my_env(envv);
-//     }
-// }
+void execute_command(t_execution *exec, t_env *env) 
+{
+    exec->av = (char **)malloc(sizeof(char *) * 3);//ft_count_word instead of 3
+    exec->av = ft_split(exec->input, ' '); 
+    // printf("data == %s\n" , exec->av[1]);
+    // exit(1);
+    // if (strcmp(spl[0], "cd") == 0)
+    // {
+    //     my_cd(exec);
+    // }
+    if (strncmp(exec->av[0], "export", 7) == 0)
+        my_export(exec);
+    if(!strncmp(exec->av[0] , "env" , 4))
+        my_env(env);
+}
 
 int main(int ac, char **av, char **env)
 {
@@ -36,9 +36,9 @@ int main(int ac, char **av, char **env)
     exec = malloc(sizeof(t_execution));
     exec->ac = ac;
     exec->env_orginal = env;
-    exec->av = av;
 
-    make_env(exec);
+    t_env *envi = make_env(exec);
+    // exec->env = envi;
 
     while (1) 
     {
@@ -61,12 +61,11 @@ int main(int ac, char **av, char **env)
                 break;
             }
 
-            execute_command(exec);
+            execute_command(exec, envi);
         }
 
         free(exec->input);
     }
 
-    clear_history();
     return 0;
 }

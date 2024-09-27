@@ -212,19 +212,19 @@ int my_cd(t_execution *exec)
     return 0;
 }
 
-int main (int ac, char **av, char **env)
-{
-    t_execution *exec = malloc (sizeof(t_execution));
-    exec->env_orginal = env;
-    t_env *test = make_env(exec);
-    exec->ac = ac;
-    exec->av = av;
-    exec->env = test;
-    // printf ("----------------------before cd ------------------\n");
-    // my_env(test);
-    my_cd(exec);
-    // printf ("----------------------after cd ------------------\n");
-    // my_env(test);
-    // printf ("-------------------------------------------------\n");
-    my_pwd();
-}
+// int main (int ac, char **av, char **env)
+// {
+//     t_execution *exec = malloc (sizeof(t_execution));
+//     exec->env_orginal = env;
+//     t_env *test = make_env(exec);
+//     exec->ac = ac;
+//     exec->av = av;
+//     exec->env = test;
+//     // printf ("----------------------before cd ------------------\n");
+//     // my_env(test);
+//     my_cd(exec);
+//     // printf ("----------------------after cd ------------------\n");
+//     // my_env(test);
+//     // printf ("-------------------------------------------------\n");
+//     my_pwd();
+// }
